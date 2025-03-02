@@ -9,6 +9,9 @@
 function usage_display()
 {
     echo "Usage: FinderBash.sh -f <logfile.txt> [-k <keywords>] [-l <log level>] [-o <output_dir>]" 
+    echo "Example: ./FinderBash.sh -f /var/log/syslog -l ERROR"
+    echo "Example: ./FinderBash.sh -f /var/log/syslog -l WARNING -k disk "
+    echo "Example (Saving Logs): ./FinderBash.sh -f /var/log/syslog -l ERROR -o /home/user/logs"
     echo "Options" 
     echo "  -f <logfile> Specify the log file to analyze (must specify path e.g, /var/log/syslog)"
     echo "  -k <keyword> Filter logs containing given keywords"
@@ -127,7 +130,7 @@ echo "Error: Input file '$logfile' does not exits or is not a regular file."
 exit 1 
 fi # Exits 
 
-if [[ ! -n $output_dir && ! -d output_dir ]]; then 
+if [[ ! -n $output_dir && ! -d $output_dir ]]; then 
     echo "Error: Output directory '$output_dir' does not exists." >&2
     exit 1
 fi # Exits 
@@ -138,7 +141,7 @@ if [[ -z $output_file ]]; then
 fi 
 
 # Applying regex filtering 
-FILTER="cat $logfile" 
+FILTER="grep -E '' $logfile" 
 
 # Regexing for keyword seaches (e.g, ERROR, WARNING)
 # \\b ONLY allows keywords to be found within sys logs
@@ -164,7 +167,7 @@ if [[ -n "$filtered_logs" ]]; then
     fi 
 
 # Save output if directory is specified
-if [[ -n $output_dir]]; then 
+if [[ -n $output_dir ]]; then 
     output_path ="$output_dir/$output_file" 
     echo "$filtered_logs" > "$output_path" 
     echo "Results saved to: $output_path" 
